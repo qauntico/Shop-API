@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 //routes imports
 const auth = require('./routes/auth');
 const product = require('./routes/category');
@@ -16,6 +17,7 @@ async function main(){
 
     app.use(bodyParser.json());
     app.use(morgan('dev'));
+    app.use(cookieParser());
 
     //routes
     app.use('/api', auth);

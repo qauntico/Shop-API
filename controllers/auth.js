@@ -2,15 +2,17 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const {  validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const {expressjwt: jwts }  = require('express-jwt');
+
 
 exports.signup = (req,res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
         return res.status(400).json({ errors: errors.array() });
     };
     const salt = Number(process.env.SALTROUNDS);
     bcrypt.hash(req.body.password, salt,async function(err, hash) {
+        console.log(hash)
         if(err){
             res.status(403).json({err: err})
         }else{
@@ -32,7 +34,10 @@ exports.signin = async (req,res) => {
         bcrypt.compare(password, user.password, function(err, result) {
             if(!err){
                 if(result){
-                    
+                    const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+                    res.cookie('myCookie', token, {expire: new Date() + 9999});
+                    user.password = undefined
+                    return res.json({token, user: user })
                 }else{
                     res.status(403).json({error:'incorrect password sir'});
                 }
@@ -46,3 +51,32 @@ exports.signin = async (req,res) => {
     }
    
 }
+//logout the user 
+exports.logout = (req,res) => {
+    res.clearCookie('myCookie');
+    res.send("user was successfully logout");
+};
+//add the user into the request object
+exports.userId = async (req,res,next, id) => {
+    const user = await User.findOne({_id: id}).exec();
+    if(user){
+        req.user = user
+        next()
+    }else{
+        res.status(403).json({error: "could not find user"})
+    }
+};
+
+exports.isAdmin = async (req,res,next) => {
+    console.log(req.user.role)
+    if(req.user.role === 1 ){
+        next()
+    }else{
+        res.status(403).json({error: "you are not authorized to perform this operation"});
+    }
+};
+
+exports.authentication = jwts({
+    secret: process.env.JWT_SECRET,
+    algorithms: ['HS256']
+  });
