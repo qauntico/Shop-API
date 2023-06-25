@@ -73,7 +73,14 @@ exports.isAdmin = async (req,res,next) => {
         next()
     }else{
         res.status(403).json({error: "you are not authorized to perform this operation"});
-    }
+    };
+};
+exports.isRegistered = async (req,res,next) => {
+    await User.findById(req.user._id).exec().then(
+        next()
+    ).catch(err => {
+        res.status(403).json({error: "you are not a user"});
+    })
 };
 
 exports.authentication = jwts({
