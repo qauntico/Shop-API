@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {ObjectId} = mongoose.Schema
 
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true
@@ -17,7 +17,8 @@ const productSchema = mongoose.Schema({
     },
     category: {
         type: ObjectId,
-        ref: 'category', 
+        //and you reference but the model name like y will get an error
+        ref: 'Category', 
         require: true
     },
     quantity: {

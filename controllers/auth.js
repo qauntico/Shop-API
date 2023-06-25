@@ -76,6 +76,7 @@ exports.isAdmin = async (req,res,next) => {
     };
 };
 exports.isRegistered = async (req,res,next) => {
+    console.log("yes i run")
     await User.findById(req.user._id).exec().then(
         next()
     ).catch(err => {

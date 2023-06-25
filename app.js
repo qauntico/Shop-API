@@ -5,10 +5,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 //routes imports
 const auth = require('./routes/auth');
-const product = require('./routes/category');
-const user = require('./routes/users');
 const category = require('./routes/category');
+const product = require('./routes/product');
+const user = require('./routes/users');
 const morgan = require('morgan');
+const cors = require('cors')
 
 
 const app = express();
@@ -18,12 +19,14 @@ async function main(){
     app.use(bodyParser.json());
     app.use(morgan('dev'));
     app.use(cookieParser());
+    app.use(cors());
 
     //routes
     app.use('/api', auth);
+    app.use('/api', category);
     app.use('/api', product);
     app.use('/api',user);
-    app.use('/api', category);
+    
 
 
 }
