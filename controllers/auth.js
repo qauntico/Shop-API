@@ -10,9 +10,9 @@ exports.signup = (req,res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     };
+    console.log(req.body)
     const salt = Number(process.env.SALTROUNDS);
     bcrypt.hash(req.body.password, salt,async function(err, hash) {
-        console.log(hash)
         if(err){
             res.status(403).json({err: err})
         }else{
