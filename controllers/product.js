@@ -85,9 +85,6 @@ exports.listBySearch = (req, res) => {
     let skip = parseInt(req.body.skip);
     let findArgs = {};
 
-    // console.log(order, sortBy, limit, skip, req.body.filters);
-    // console.log("findArgs", findArgs);
-
     for (let key in req.body.filters) {
         if (req.body.filters[key].length > 0) {
             if (key === 'price') {
@@ -126,3 +123,29 @@ exports.photo = (req,res, next ) => {
     }
     next()
 }
+
+
+exports.listSearch =async (req, res) => {
+    // create query object to hold search value and category value
+    const query = {};
+    // assign search value to query.name
+    if (req.query.search) {
+        //the option 'i' means we should  that monoose should not check cases 
+        query.name = { $regex: req.query.search, $options: 'i' };
+        // assigne category value to query.category
+        if (req.query.category && req.query.category != 'All') {
+            query.category = req.query.category;
+        }
+        // find the product based on query object with 2 properties
+        // search and category
+        await Product.find(query)
+        .select('-photo')
+        .then(products => {
+            res.json(products)
+        }).catch(err => {
+            return res.status(400).json({
+                error: errorHandler(err)
+            });
+        })
+    }
+};
