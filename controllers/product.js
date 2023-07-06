@@ -3,7 +3,9 @@ const formidable = require('formidable')
 const fs = require('fs');
 
 exports.productId =async (req,res, next, id) => {
-    await Product.findById(id).exec().then(product => {
+    await Product.findById(id)
+        .populate('category')
+        .exec().then(product => {
         req.product = product;
         next();
     }).catch(err => {
@@ -45,7 +47,7 @@ exports.list =async (req,res) => {
     let order = req.query.order ? req.query.odrer : 'desc' ;
     await Product.find({})
         .select('-photo')
-        .populate('category')
+        .populate('category')//the populate is use to 
         .limit(limit)
         .sort([[sort, order]])
         .exec()
@@ -56,7 +58,7 @@ exports.list =async (req,res) => {
         });
 
 };
-
+//update product controller
 exports.update = async (req, res) => {
     const form = new formidable.IncomingForm()
     form.parse(req,async (err, fields, files) => {
@@ -78,6 +80,7 @@ exports.update = async (req, res) => {
         await product.save().then(result => res.json({result: result})).catch(err => res.send(err))
     }) 
 };
+//the search controller
 exports.listBySearch = (req, res) => {
     let order = req.body.order ? req.body.order : 'desc';
     let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
@@ -115,6 +118,7 @@ exports.listBySearch = (req, res) => {
             res.status(403).json({error: "product not found"})
         })
 };
+//send product photo
 exports.photo = (req,res, next ) => {
     if (req.product.photo.data) {
         //console.log(req.product)
@@ -124,13 +128,13 @@ exports.photo = (req,res, next ) => {
     next()
 }
 
-
+//the search controller 
 exports.listSearch =async (req, res) => {
     // create query object to hold search value and category value
     const query = {};
     // assign search value to query.name
     if (req.query.search) {
-        //the option 'i' means we should  that monoose should not check cases 
+        //the option 'i' means  that mongoose should not check cases 
         query.name = { $regex: req.query.search, $options: 'i' };
         // assigne category value to query.category
         if (req.query.category && req.query.category != 'All') {
@@ -148,4 +152,25 @@ exports.listSearch =async (req, res) => {
             });
         })
     }
+};
+
+//it will find the products base on the request product category 
+exports.listRelated = async (req, res) => {
+    console.log(req.product)
+    let limit = req.query.limit ? parseInt(req.query.limit): 5;
+    const data = await Product.find({_id: {$ne: req.product._id}, category: req.product.category})
+        .select("-photo")
+        .limit(limit)
+        //here we are specifying that we want only the _id and name to be populated into the product product querry from the 
+        //category document 
+        .populate("category", "_id name")
+        .exec()
+        .catch(err => {
+            res.status(400).json({error: err})
+        });
+    res.send(data);  
+};
+
+exports.listCategories = async (req, res ) => {
+    Product.distinct('category', {}).then(products => res.json(products)).catch(err => res.send(err))
 };
