@@ -4,7 +4,7 @@ const fs = require('fs');
 
 exports.productId =async (req,res, next, id) => {
     await Product.findById(id)
-        .populate('category')
+        .populate('category')//method in Mongoose is used to populate referenced documents in a query result. It allows you to retrieve additional data from other collections that are referenced by a field in the queried documents
         .exec().then(product => {
         req.product = product;
         next();
@@ -80,7 +80,7 @@ exports.update = async (req, res) => {
         await product.save().then(result => res.json({result: result})).catch(err => res.send(err))
     }) 
 };
-//the search controller
+//the sort controller
 exports.listBySearch = (req, res) => {
     let order = req.body.order ? req.body.order : 'desc';
     let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
