@@ -13,7 +13,7 @@ exports.list = async (req,res) => {
     await Category.find({}).then(result => {
         res.send(result);
     }).catch(err => {
-        res.status(403).json({err: "Could not get products"})
+        res.status(403).json({error: "Could not get products"})
     })
 };
 //send out a single category
@@ -22,7 +22,6 @@ exports.category = async (req,res) => {
 };
 //update a single category
 exports.update = async (req, res) => {
-    console.log(req.body)
     await Category.findOneAndUpdate({name: req.category.name}, { $set: req.body})
         .then(result => {
         res.send(result)
