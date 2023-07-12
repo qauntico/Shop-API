@@ -8,7 +8,8 @@ const auth = require('./routes/auth');
 const category = require('./routes/category');
 const product = require('./routes/product');
 const user = require('./routes/users');
-const braintree = require('./routes/braintree')
+const braintree = require('./routes/braintree');
+const order = require('./routes/order')
 const morgan = require('morgan');
 const cors = require('cors');
 
@@ -28,6 +29,7 @@ async function main(){
     app.use('/api', product);
     app.use('/api',user);
     app.use('/api',braintree);
+    app.use('/api',order);
     
 
 

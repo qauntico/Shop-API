@@ -174,3 +174,19 @@ exports.listRelated = async (req, res) => {
 exports.listCategories = async (req, res ) => {
     Product.distinct('category', {}).then(products => res.json(products)).catch(err => res.send(err))
 };
+
+exports.decreaseQuantity = (req, res, next) => {
+    let bulkOps = req.body.order.products.map(item => {
+        return {
+            updateOne: {
+                filter: { _id: item._id },
+                update: { $inc: { quantity: -item.count, sold: +item.count } }//In Mongoose and MongoDB, the $inc operator is used in update queries to increment or decrement the value of a field in a document.
+            }
+        };
+    });
+
+    Product.bulkWrite(bulkOps, {}).catch(error => {
+        res.send(error)
+    });
+    next();
+};

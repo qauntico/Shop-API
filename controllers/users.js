@@ -51,3 +51,25 @@ exports.remove = async (req,res) => {
             res.status(403).json({error: "user was not deleted"})
         })
 };
+
+exports.addOrderToUserHistory = async (req, res, next) => {
+    let history = [];
+
+    req.body.order.products.forEach(item => {
+        history.push({
+            _id: item._id,
+            name: item.name,
+            description: item.description,
+            category: item.category,
+            quantity: item.count,
+            transaction_id: req.body.order.transaction_id,
+            amount: req.body.order.amount
+        });
+    });
+    //by using new true we are telling mongoose to return the new updated documents after the update and not the previous document before the update
+    //becuase by default when mongoose updates a document it returns the document before the update and not the recent document
+    await User.findOneAndUpdate({ _id: req.user._id }, { $push: { history: history } }, { new: true }).catch(error => {
+        res.status(403).json({error: 'could not update the document'});
+    })
+    next();
+};
