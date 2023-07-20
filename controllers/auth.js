@@ -19,7 +19,7 @@ exports.signup = (req,res) => {
             const newUser = new User({...req.body,["password"]: hash});
             await newUser.save().then(user => {
                 user.password = undefined
-                res.send(user);
+                res.json({success: 'Your Account Was Successfully Created Thanks For Having Trust In Us'});
             }).catch(err => {
                 console.log(err)//checking saving error from the developer site
                 return res.status(400).json({error: "Either The Email You Trying To Save Already Exist Or You Have Entered a Wrong Value SomeWhere"});
@@ -30,7 +30,6 @@ exports.signup = (req,res) => {
 
 //signin a user 
 exports.signin = async (req,res) => {
-    console.log(req.body)
     const username = req.body.email;
     const password = req.body.password;
     const user = await User.findOne({email: username}).exec();//check if user exist 
