@@ -62,6 +62,7 @@ exports.logout = (req,res) => {
 
 //add the user into the request object
 exports.userId = async (req,res,next, id) => {
+    console.log(id)
     const user = await User.findOne({_id: id}).exec();
     if(user){
         req.user = user

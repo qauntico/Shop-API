@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const Order = require('../models/order');
+const {errorHandler } = require('../Helpers/errorhandler');
 
 exports.read =async (req,res) => {
     try{
@@ -72,4 +74,16 @@ exports.addOrderToUserHistory = async (req, res, next) => {
         res.status(403).json({error: 'could not update the document'});
     })
     next();
+};
+
+//user purchase history
+exports.purchaseHistory = async  (req, res) => {
+    await Order.find({ user: req.user._id })
+            .populate('user', '_id name')
+            .sort('-created')
+            .exec().then(orders => {
+                res.json(orders);
+            }).catch(err => {
+                return res.status(403).json({error: errorHandler(err)});
+            });
 };

@@ -17,7 +17,7 @@ exports.create = async (req,res) => {
 //get all user request 
 exports.list = async (req,res) => {
     await AdminRequest.find()
-        .populate('user')//specifing that populate the order field with just the name, _id ... from the user document
+        .populate('user', 'name email history')//specifing that populate the order field with just the name, _id ... from the user document
         .sort('-created')//this signifies that it should be sort by date created
         .exec().then(data => {
             res.json(data)
@@ -28,7 +28,7 @@ exports.list = async (req,res) => {
 //change or accept the user request
 exports.update = async (req,res) => {
     await User.findByIdAndUpdate(req.adminRequestId.user , { $set: {role: 1}}).then(
-        res.send("Request Was Successfully Accepted")
+        res.json({success: 'Request Was Successfully Sent'})
     )  
 }
 
