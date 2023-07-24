@@ -9,7 +9,8 @@ const category = require('./routes/category');
 const product = require('./routes/product');
 const user = require('./routes/users');
 const braintree = require('./routes/braintree');
-const order = require('./routes/order')
+const order = require('./routes/order');
+const adminRequest = require('./routes/adminRequest');
 const morgan = require('morgan');
 const cors = require('cors');
 
@@ -30,6 +31,7 @@ async function main(){
     app.use('/api',user);
     app.use('/api',braintree);
     app.use('/api',order);
+    app.use('/api', adminRequest);
     
 
 
