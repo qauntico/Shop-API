@@ -12,6 +12,6 @@ router.get('/product/one/:productId', singleProduct);
 router.put('/product/:productId/:userId',isRegistered,isAdmin,authentication, update);
 router.get('/product/photo/:productId',photo)
 router.param('userId', userId);
-router.param('productId', productId)
+router.param('productId', productId);
 
 module.exports = router;

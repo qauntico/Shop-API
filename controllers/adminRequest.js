@@ -17,7 +17,7 @@ exports.create = async (req,res) => {
 //get all user request 
 exports.list = async (req,res) => {
     await AdminRequest.find()
-        .populate('user', 'name email history')//specifing that populate the order field with just the name, _id ... from the user document
+        .populate('user', 'name email createdAt updatedAt')//specifing that populate the order field with just the name, _id ... from the user document
         .sort('-created')//this signifies that it should be sort by date created
         .exec().then(data => {
             res.json(data)
@@ -35,7 +35,7 @@ exports.update = async (req,res) => {
 //decline user request
 exports.remove = async (req,res) => {
     await AdminRequest.findOneAndDelete({user: req.user._id})
-    .then(res.send('Request Was Successfully Cancelled'))
+    .then(res.json({success: 'Request Was Successfully Declined'}))
     .catch(err => {
         res.status(403).json({error: "Could Not Cancel Request"})
     }) 

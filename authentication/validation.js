@@ -7,4 +7,8 @@ const validation = [
     body('password').isLength({ min: 6 }).withMessage('Password should be at least 6 characters long')
   ]
 
-module.exports = validation;
+
+
+module.exports = {
+  validation,
+};

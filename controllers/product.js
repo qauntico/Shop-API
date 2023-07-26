@@ -1,6 +1,9 @@
 const Product = require('../models/product');
-const formidable = require('formidable')
+const formidable = require('formidable');
+const {  validationResult } = require('express-validator');
 const fs = require('fs');
+const _ = require('lodash');
+const {errorHandler } = require('../Helpers/errorhandler');
 
 exports.productId =async (req,res, next, id) => {
     await Product.findById(id)
@@ -22,8 +25,26 @@ exports.create = (req,res) => {
         console.log(err)
         return;
       }
+      //api validation
+      if(!fields.name){
+        return res.status(400).json({error: 'There is No Event Name How Will People Identify What Event It is'})
+      }
+      if(!fields.price){
+        return res.status(400).json({error: 'What Are The Ticket Prices For Your Event '})
+      }
+      if(!fields.description){
+        return res.status(400).json({error: 'Describe Your Event So That People Can Know'})
+      }
+      if(!fields.category){
+        return res.status(400).json({error: 'Your Event Is Found In Non Of the Category Listed'})
+      }
+      if(!fields.quantity){
+        return res.status(400).json({error: 'What Is The Quantity Of Tickets Available For This Event'})
+      }
+      if(!files.photo){
+        return res.status(400).json({error: 'Add A Image For Your Event '})
+      }
       const product = new Product(fields)
-      //console.log(files)
       if(files.photo){
         const photo = files.photo;
         const photoData = fs.readFileSync(photo.filepath);
@@ -33,7 +54,10 @@ exports.create = (req,res) => {
             contentType: mimeType
           };
       }
-      await product.save().then(res.json({message: "this was a success"})).catch(err => {
+      await product.save().then(
+            res.json({success: "Event Was Succesfully Created"})
+        )
+        .catch(err => {
         res.status(403).json({error: "could not save data an errored occured"})
       })
     });
@@ -77,7 +101,7 @@ exports.update = async (req, res) => {
             product.photo.contentType = files.photo.mimetype;
 
         }
-        await product.save().then(result => res.json({result: result})).catch(err => res.send(err))
+        await product.save().then(result => res.json({success: 'Event Was Successfully Updated..'})).catch(err => res.status(403).json({error: 'Could Not Update Event An Error Occurred Try Again Later'}))
     }) 
 };
 //the sort controller
