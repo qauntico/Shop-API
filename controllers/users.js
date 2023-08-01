@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const Order = require('../models/order');
+const {Order} = require('../models/order');
 const {errorHandler } = require('../Helpers/errorhandler');
 
 exports.read =async (req,res) => {
