@@ -40,8 +40,10 @@ exports.update = async (req,res) => {
         };
         
     }else{
-        await User.findByIdAndUpdate(req.user._id, { $set: req.body}).then(
-            res.send("user have been update")
+        await User.findByIdAndUpdate(req.user._id, { $set: req.body},{ new: true }).then(result => {
+            result.password = undefined;
+            return res.send(result)
+        }
         )
     }
 };
