@@ -36,7 +36,19 @@ exports.create = (req,res) => {
         return res.status(400).json({error: 'Describe Your Event So That People Can Know'})
       }
       if(!fields.category){
-        return res.status(400).json({error: 'Your Event Is Found In Non Of the Category Listed'})
+        return res.status(400).json({error: 'The Category For Your Event Was not Selected'})
+      }
+      if(!fields.endTime){
+        return res.status(400).json({error: 'What Is The Estimated Time For This Event To End'})
+      }
+      if(!fields.startTime){
+        return res.status(400).json({error: 'At What Time Does Your Event Start'})
+      }
+      if(!fields.startDate){
+        return res.status(400).json({error: 'What Is The Start Date For Your Event'})
+      }
+      if(!fields.location){
+        return res.status(400).json({error: 'Location For This Event ? .....'})
       }
       if(!fields.quantity){
         return res.status(400).json({error: 'What Is The Quantity Of Tickets Available For This Event'})
@@ -180,8 +192,7 @@ exports.listSearch =async (req, res) => {
 
 //it will find the products base on the request product category 
 exports.listRelated = async (req, res) => {
-    console.log(req.product)
-    let limit = req.query.limit ? parseInt(req.query.limit): 5;
+    let limit = req.query.limit ? parseInt(req.query.limit): 10;
     const data = await Product.find({_id: {$ne: req.product._id}, category: req.product.category})
         .select("-photo")
         .limit(limit)
