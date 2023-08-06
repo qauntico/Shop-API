@@ -3,9 +3,9 @@ const Category = require('../models/category');
 exports.create = async (req,res) => {
     const category = new Category(req.body);
     await category.save().then(result => {
-        res.send(result);
+        res.json({success: "That Category has been Created"});
     }).catch(err => {
-        res.status(403).json({error: "could not create category"});
+        res.status(403).json({error: "An Error Occured or Either That Category Already Exist"});
     });
 };
 //list out categories 
@@ -13,7 +13,7 @@ exports.list = async (req,res) => {
     await Category.find({}).then(result => {
         res.send(result);
     }).catch(err => {
-        res.status(403).json({error: "Could not get products"})
+        res.status(403).json({error: "Could not get category"})
     })
 };
 //send out a single category
@@ -32,9 +32,9 @@ exports.update = async (req, res) => {
 //remove a category 
 exports.remove = async (req,res) => {
     await Category.findOneAndDelete({name: req.category.name})
-        .then(res.send('this was a success'))
+        .then(res.json({success: 'Category Was Successfully Deleted'}))
         .catch(err => {
-            res.status(403).json({error: err})
+            res.status(403).json({error: 'Could Not Delete Category And Error Occured'})
         })
 };
 
