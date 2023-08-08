@@ -13,7 +13,6 @@ exports.orderId =async (req, res, next, id) => {
 
 
 exports.create =async (req, res) => {
-    console.log('CREATE ORDER: ', req.body);
     req.body.order.user = req.user;
     const order = new Order(req.body.order);
     await order.save().then(data => {

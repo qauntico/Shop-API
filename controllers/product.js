@@ -225,3 +225,11 @@ exports.decreaseQuantity = (req, res, next) => {
     });
     next();
 };
+
+exports.remove = async (req,res) => {
+    await Product.findOneAndDelete({name: req.product.name})
+        .then(res.json({success: 'Product Was Successfully Deleted'}))
+        .catch(err => {
+            res.status(403).json({error: 'Could Not Delete Product And Error Occured'})
+        })
+};
