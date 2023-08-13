@@ -17,7 +17,7 @@ const cors = require('cors');
 
 const app = express();
 async function main(){
-    await mongoose.connect(process.env.DATABASE,{ useNewUrlParser:true});
+    await mongoose.connect(process.env.ONLINEDB,{ useNewUrlParser:true});
 
     app.use(bodyParser.json());//parse json data 
     app.use(morgan('dev'));//will help show the various statuses when a request is sent to any of api routes
@@ -38,6 +38,6 @@ async function main(){
 }
 main().catch(console.dir);//catches any error and prints to the console
 
-app.listen(process.env.PORT, function() {
+app.listen(process.env.PORT || 8080, function() {
     console.log('server started '+process.env.PORT)
 });
