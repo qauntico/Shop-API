@@ -17,13 +17,16 @@ const cors = require('cors');
 
 const app = express();
 async function main(){
-    await mongoose.connect(process.env.ONLINEDB,{ useNewUrlParser:true});
+    await mongoose.connect(process.env.DATABASE,{ useNewUrlParser:true})
+        .then(console.log('it was a success')).catch(error => console.log(error))
 
     app.use(bodyParser.json());//parse json data 
     app.use(morgan('dev'));//will help show the various statuses when a request is sent to any of api routes
     app.use(cookieParser());//will be use to parse cookies and will be mostly used by express-jwt
-    app.use(cors());//will help our api handle request headers correctly
-
+    app.use(cors({
+        origin: 'http://localhost:3000', // Replace with your frontend's URL
+        credentials: true, // This enables cookies to be sent along with the request
+    }));
     //routes
     app.use('/api', auth);
     app.use('/api', category);

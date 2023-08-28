@@ -29,31 +29,34 @@ exports.signup = (req,res) => {
 };
 
 //signin a user 
-exports.signin = async (req,res) => {
+exports.signin = async (req, res) => {
     const username = req.body.email;
     const password = req.body.password;
-    const user = await User.findOne({email: username}).exec();//check if user exist 
+    const user = await User.findOne({ email: username }).exec(); //check if user exists
     if (user) {
-        bcrypt.compare(password, user.password, function(err, result) {
-            if(!err){
-                if(result){
-                    const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET,{expiresIn: '2d'});
-                    res.cookie('myCookie', token, {expire: new Date() + 9999});
-                    user.password = undefined
-                    return res.json({token, user: user })
-                }else{
-                    res.status(403).json({error:'incorrect password sir'});
+        bcrypt.compare(password, user.password, function (err, result) {
+            if (!err) {
+                if (result) {
+                    const token = jwt.sign({ _id: user._id,  role: user.role}, process.env.JWT_SECRET); // Token expires at the end of the session
+                    res.cookie('myCookie', token, {
+                        httpOnly: true,
+                        secure: false, // Set this to true when using HTTPS
+                        sameSite: 'strict',
+                        expires: 0,
+                    });
+                    user.password = undefined;
+                    return res.json({ token: token, user: user });
+                } else {
+                    res.status(403).json({ error: 'Incorrect password' });
                 }
-            }else{
-                res.status(403).json({error: errorHandler(err)})
+            } else {
+                res.status(403).json({ error: errorHandler(err) });
             }
-            
         });
-    }else{
-        res.status(400).json({error: "user was not found"})
+    } else {
+        res.status(400).json({ error: 'User was not found' });
     }
-   
-}
+};
 //logout the user 
 exports.logout = (req,res) => {
     res.clearCookie('myCookie');
@@ -91,7 +94,23 @@ exports.isRegistered = async (req,res,next) => {
 };
 
 //authenticated user tokens
-exports.authentication = jwts({
-    secret: process.env.JWT_SECRET,
-    algorithms: ['HS256']
-  });
+//exports.authentication = jwts({
+    //secret: process.env.JWT_SECRET,
+    //algorithms: ['HS256']
+  //});
+
+exports.authentication = (req, res, next) => {
+    const token = req.cookies.myCookie; // Fetch the token from the cookie
+   
+    if (!token) {
+        return res.status(401).json({ error: 'Authentication token missing' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid token' });
+        }
+        next();
+    });
+};
+
