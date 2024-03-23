@@ -40,4 +40,6 @@ You can fine api endpoints for this api in the router file.
 2. PORT
 3. SALTROUNDS
 4. JWT_SECRET
-   
+5. RAINTREE_MERCHANT_ID
+6. BRAINTREE_PUPLIC_KEY
+7. BRAINTREE_PRIVATE_KEY
