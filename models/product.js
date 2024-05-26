@@ -24,7 +24,6 @@ const productSchema = new mongoose.Schema({
     },
     quantity: {
         type: Number,
-        require: true
     },
     sold: {
         type: Number,
@@ -48,7 +47,6 @@ const productSchema = new mongoose.Schema({
       },
       endTime: {
         type: String,
-        required: true,
       },
       location: {
         type: String,
