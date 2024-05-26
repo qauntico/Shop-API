@@ -39,5 +39,5 @@ async function main(){
 main().catch(console.dir);//catches any error and prints to the console
 
 app.listen(process.env.PORT || 8080, function() {
-    console.log('server started '+process.env.PORT)
+    console.log('server started ' + process.env.PORT)
 });

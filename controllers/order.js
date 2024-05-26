@@ -1,4 +1,4 @@
-const { Order, CartItem } = require('../models/order');
+const { Order } = require('../models/order');
 
 exports.orderId =async (req, res, next, id) => {
     await Order.findById(id)
