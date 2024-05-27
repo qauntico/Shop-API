@@ -16,7 +16,8 @@ exports.signup = (req,res) => {
         if(err){
             res.status(400).json({error: errorHandler(err)})
         }else{
-            const newUser = new User({...req.body,["password"]: hash});
+            const email = req.body.email.toLowerCase().trim();
+            const newUser = new User({...req.body,["password"]: hash, ["email"]: email});
             await newUser.save().then(user => {
                 user.password = undefined
                 res.json({success: 'Your Account Was Successfully Created Thanks For Having Trust In Us'});
