@@ -50,7 +50,7 @@ exports.updateOrderStatus = async (req, res) => {
         });
     } catch (error) {
         return res.status(400).json({
-            error: err
+            error: error
         }) 
     }
 };
