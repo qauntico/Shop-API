@@ -43,8 +43,8 @@ exports.updateOrderStatus = async (req, res) => {
     try {
         const user = await User.findById(req.body.user).find();
         const subject = "Update On Event Ticket";
-        const text = `Your Ticket Status Have Been Updated To ${req.body.status} Check In Your User Profile`
-        await sendEmail(user[0].email, subject, text )
+        const text = `Your Ticket Status Have Been Updated To ${req.body.status} Check In Your User Profile`;
+        // await sendEmail(user[0].email, subject, text )
         const order = await Order.findByIdAndUpdate(req.body.orderId, { $set: { status: req.body.status } });
         if (order){
             return res.json(order)
