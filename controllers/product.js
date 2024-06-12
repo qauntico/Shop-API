@@ -73,6 +73,7 @@ exports.create = (req, res) => {
         };
       }
       const result = await product.save().catch((err) => {
+        console.log(err)
         res
           .status(403)
           .json({ error: "could not save data an errored occured" });
